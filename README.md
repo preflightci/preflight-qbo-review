@@ -49,7 +49,7 @@ jobs:
     if: github.event.deployment_status.state == 'success'
     runs-on: ubuntu-latest
     steps:
-      - uses: <your-org>/preflight-qbo-review@v1
+      - uses: preflightci/preflight-qbo-review@v1
         with:
           url: ${{ github.event.deployment_status.target_url }}
           token-endpoint: /oauth/callback   # optional
@@ -75,7 +75,7 @@ jobs:
   preflight:
     runs-on: ubuntu-latest
     steps:
-      - uses: <your-org>/preflight-qbo-review@v1
+      - uses: preflightci/preflight-qbo-review@v1
         with:
           url: https://your-app.example.com
           fail-on: warn      # alert on warnings too, for monitoring
