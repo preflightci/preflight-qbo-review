@@ -1,0 +1,36 @@
+name: 'Preflight QBO Review Check'
+description: 'Monitor your live QuickBooks Online app against Intuit''s runtime security requirements — post-deploy and on a schedule.'
+author: 'Preflight'
+
+branding:
+  icon: 'check-circle'
+  color: 'green'
+
+inputs:
+  url:
+    description: 'Base URL of your deployed app to probe (e.g. https://app.example.com).'
+    required: true
+  token-endpoint:
+    description: 'Optional path of a token-bearing endpoint to check the 302-redirect rule (e.g. /oauth/callback).'
+    required: false
+    default: ''
+  fail-on:
+    description: 'When to fail the workflow: "fail" (default), "warn", or "never".'
+    required: false
+    default: 'fail'
+  format:
+    description: 'Output format in the log: "text" (default) or "json".'
+    required: false
+    default: 'text'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Run Preflight checks
+      shell: bash
+      run: |
+        python3 "${{ github.action_path }}/preflight_check.py" \
+          --url "${{ inputs.url }}" \
+          --token-endpoint "${{ inputs.token-endpoint }}" \
+          --fail-on "${{ inputs.fail-on }}" \
+          --format "${{ inputs.format }}"

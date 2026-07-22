@@ -1,0 +1,33 @@
+# This workflow tests THIS ACTION itself — it is not the pattern consumers use.
+# (Consumers trigger Preflight on `deployment_status` or `schedule` — see README.)
+# Here we run on push/PR just to confirm the action executes correctly.
+name: Self-test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Run the action against a known-good public HTTPS site.
+      # fail-on: never so the self-test never blocks CI on the target's config.
+      - name: Run Preflight (self-test)
+        uses: ./
+        with:
+          url: https://preflightci.dev
+          fail-on: never
+
+      # Also exercise the script directly in both formats.
+      - name: Script smoke test (text)
+        shell: bash
+        run: python3 preflight_check.py --url https://preflightci.dev --fail-on never --format text
+
+      - name: Script smoke test (json)
+        shell: bash
+        run: python3 preflight_check.py --url https://preflightci.dev --fail-on never --format json
